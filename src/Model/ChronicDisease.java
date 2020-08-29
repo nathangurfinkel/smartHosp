@@ -4,29 +4,60 @@ import java.io.Serializable;
 import java.util.HashSet;
 
 import Utils.Symptoms;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 public class ChronicDisease extends Disease implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 9054769563038430354L;
-	private boolean isInheritence;
 
-	public ChronicDisease(int id, String name, HashSet<Symptoms> symptoms, boolean isInheritence) {
-		super(id, name, symptoms);
-		this.isInheritence = isInheritence;
+	/**
+	 *
+	 */
+
+	private transient SimpleBooleanProperty isInherited;
+
+	private static final long serialVersionUID = 9054769563038430354L;
+	private boolean _isInherited;
+
+	public ChronicDisease(String name, HashSet<Symptoms> symptoms, boolean isInherited) {
+		super(name, symptoms);
+		setIsInherited(isInherited);
 	}
 
 	public ChronicDisease(int id) {
 		super(id);
 	}
 
-	public boolean isInheritence() {
-		return isInheritence;
+	/*
+	 * field getters
+	 */
+	public boolean getIsInherited() {
+		if (isInherited == null) {
+			return _isInherited;
+		} else {
+			return isInherited.get();
+		}
 	}
 
-	public void setInheritence(boolean isInheritence) {
-		this.isInheritence = isInheritence;
+	/*
+	 * field setters
+	 */
+	public void setIsInherited(boolean isInherited) {
+		if (this.isInherited == null) {
+			_isInherited = isInherited;
+		} else {
+			this.isInherited.set(isInherited);
+		}
+	}
+
+	/*
+	 * properties getters
+	 */
+
+	public BooleanProperty isInheritedProperty() {
+		if (isInherited == null) {
+			isInherited = new SimpleBooleanProperty(_isInherited);
+		}
+		return isInherited;
 	}
 
 	@Override

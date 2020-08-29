@@ -1,39 +1,36 @@
 .root {
+    -fx-background-color: #e0edff;
     -fx-text-fill: #275273;
- -fx-background-color: #e0edff
-;}
+}
 
 .text-field {
-    -fx-text-fill: #275273;
-    -fx-text-box-border: transparent;
-    -fx-border-width: 0 0 0 0;
-    -fx-background-color: #CBDBE6;
-    -fx-border-color: #F39292;
     -fx-background-radius: 5.0, 5.0, 5.0;
-
+    -fx-border-color: #F39292;
+    -fx-background-color: #CBDBE6;
+    -fx-border-width: 0 0 0 0;
+    -fx-text-box-border: transparent;
+    -fx-text-fill: #275273;
 }
 
 .text-field:focused {
-    -fx-text-fill: #275273;
-    -fx-border-width: 0 0 1.5 0;
-    -fx-background-color: #CBDBE6;
-    -fx-text-box-border: transparent;
-    -fx-border-color: #F39292;
-    -fx-border-transition: transform 1;
-    -fx-background-radius: 5.0, 5.0, 5.0;
     -fx-border-radius: 5.0, 5.0, 5.0;
-
+    -fx-background-radius: 5.0, 5.0, 5.0;
+    -fx-border-transition: transform 1;
+    -fx-border-color: #F39292;
+    -fx-text-box-border: transparent;
+    -fx-background-color: #CBDBE6;
+    -fx-border-width: 0 0 1.5 0;
+    -fx-text-fill: #275273;
 }
 
 .button1 {
-    -fx-cursor: hand;
-    -fx-font-weight: bold;
-    -fx-text-fill: #275273;
-    -fx-background-color: #F39292;
-    -fx-background-radius: 5.0, 5.0, 5.0;
-    -fx-text-alignment: center;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
-
+    -fx-text-alignment: center;
+    -fx-background-radius: 5.0, 5.0, 5.0;
+    -fx-background-color: #F39292;
+    -fx-text-fill: #275273;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .button1:hover {
@@ -41,118 +38,117 @@
 }
 
 .button1:pressed {
-
-    -fx-text-fill: #FFBEBE;
-    -fx-background-color: #D86161;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
     -fx-text-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
+    -fx-background-color: #D86161;
+    -fx-text-fill: #FFBEBE;
 }
 
 .button2 {
-    -fx-text-fill: #D86161;
-    -fx-background-color: transparent;
-
-    -fx-cursor: hand;
-    -fx-font-weight: normal;
-    -fx-background-radius: 5.0, 5.0, 5.0;
-    -fx-text-alignment: center;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
-
+    -fx-text-alignment: center;
+    -fx-background-radius: 5.0, 5.0, 5.0;
+    -fx-font-weight: normal;
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-text-fill: #D86161;
 }
 
-
-
 .button2:pressed {
-    -fx-cursor: hand;
-
-    -fx-text-fill: #275273;
-
-    -fx-background-color: transparent;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
     -fx-text-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
+    -fx-background-color: transparent;
+    -fx-text-fill: #275273;
+    -fx-cursor: hand;
 }
 
 .inputBlock {
-    -fx-background-radius: 5.0, 5.0, 4.0;
+    -fx-background-color: #265D83;
     -fx-background-insets: 0.0 0.0 -1.0 0.0, 0.0, 1.0;
-    -fx-background-color: #98B4C8;
+    -fx-background-radius: 5.0, 5.0, 4.0;
 }
 
 .logoBlock {
-    -fx-background-color: #98B4C8;
-
+    -fx-background-color: #265D83;
 }
 
 .labelBig {
-    -fx-font-weight: bold;
-    -fx-text-fill: #D86161;
-    -fx-wrap-text: true;
     -fx-font-size: 14px;
-
+    -fx-wrap-text: true;
+    -fx-text-fill: #D86161;
+    -fx-font-weight: bold;
 }
-.tabLabel:selected{
-	   -fx-font-weight: bold;
-    -fx-text-fill: #275273;
-    -fx-background-color: #F39292;	
-	
+.labelSmall {
+    -fx-font-size: 12px;
+    -fx-wrap-text: true;
+    -fx-text-fill: #D86161;
 }
 
-.jfx-tab-pane .tab-header-background {
-    -fx-background-color: #C1D1DB;
-    
-    }
 
-
-.tabLabel{
-   -fx-font-weight: bold;
-    -fx-text-fill: #275273;
-    -fx-background-color: #98B4C8;	
-	
-}
 
 .legal {
-    -fx-font-size: 10px;
     -fx-text-fill: #D86161;
+    -fx-font-size: 10px;
 }
 
 .userPic {
-	-fx-background-radius: 20;
+    -fx-background-radius: 20;
 }
 
-.button3
-{
-	    -fx-cursor: hand;
-	    -fx-font-weight: bold;
-	
--fx-background-color : #E0EDFF;
--fx-text-fill : #265D83;
+.menuButtonsTop {
+	-fx-border-radius: 5 5 0 0;
+  	-fx-background-radius: 5 5 0 0;
+    -fx-text-fill: #265D83;
+    -fx-background-color: #E0EDFF;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
-.button3:hover{
-	    -fx-font-weight: bold;
-	
--fx-background-color : #98B4C8;
+.menuButtonsMiddle {
+		-fx-border-radius: 0 0 0 0;
+  	-fx-background-radius: 0 0 0 0;
+    -fx-text-fill: #265D83;
+    -fx-background-color: #E0EDFF;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
-.button3:pressed
-{
-	    -fx-text-fill: white;
-	
--fx-background-color : #F39292;
+.menuButtonsBottom {
+	-fx-border-radius: 0 0 5 5;
+  	-fx-background-radius: 0 0 5 5;
+    -fx-text-fill: #265D83;
+    -fx-background-color: #E0EDFF;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
-.increment-button, .decrement-button {
-    -fx-background-color: transparent;
+.menuButtonsTop:hover, .menuButtonsMiddle:hover, .menuButtonsBottom:hover {
+    -fx-background-color: #98B4C8;
+    -fx-font-weight: bold;
+}
+
+.menuButtonsTop:pressed, .menuButtonsMiddle:pressed, .menuButtonsBottom:pressed {
+    -fx-background-color: #F39292;
+    -fx-text-fill: white;
+}
+
+.menuButtonsTop:selected, .menuButtonsMiddle:selected, .menuButtonsBottom:selected {
+    -fx-background-radius:  0 0 0 0;
+    -fx-background-color: #F39292;
+
+}
+
+.increment-button,
+.decrement-button {
     -fx-border-color: transparent;
+    -fx-background-color: transparent;
 }
-
 
 .darkToggle {
-    -fx-cursor: hand;
-    -fx-font-weight: bold;
-    -fx-text-fill: #F39292;
-    -fx-background-color: #265D83;
-    -fx-background-radius: 5.0, 5.0, 5.0;
-    -fx-text-alignment: center;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
-
+    -fx-text-alignment: center;
+    -fx-background-radius: 5.0, 5.0, 5.0;
+    -fx-background-color: #265D83;
+    -fx-text-fill: #F39292;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .darkToggle:hover {
@@ -160,16 +156,113 @@
 }
 
 .darkToggle:selected {
-
-    -fx-text-fill: #D86161;
-    -fx-background-color: #FFBEBE;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
     -fx-text-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 5, 0.0, 0, 1);
+    -fx-background-color: #FFBEBE;
+    -fx-text-fill: #D86161;
 }
 
-.bottomPanel{
-	    -fx-background-color: #265D83;
-	
-	
+.bottomPanel {
+    -fx-border-width: 0 0 5 0;
+    -fx-background-color: #265D83;
 }
 
+.choiceBoxes {
+    -fx-text-fill: #265D83;
+    -fx-background-color: #CBDBE6;
+}
+
+.choiceBoxes:hover {
+    -fx-background-color: #98B4C8;
+    -fx-font-weight: bold;
+}
+
+.choiceBoxes:pressed {
+    -fx-background-color: #F39292;
+    -fx-text-fill: white;
+}
+
+.table-view {
+	    -fx-text-alignment: left;
+    -fx-alignment: CENTER_LEFT;
+		-fx-border-color: transparent;
+	
+    -fx-background-radius: 5.0, 5.0, 5.0;
+}
+.table-view .column-header,
+.table-view .column-header .filler,
+.table-view .column-header-background .filler {
+		-fx-border-color: transparent;
+	
+    -fx-text-alignment: left;
+  -fx-alignment: CENTER-RIGHT;
+    -fx-size: 50;
+    -fx-stroke: transparent;
+    -fx-background-color: #98B4C8;
+}
+
+.table-row-cell:filled:hover {
+    -fx-text-alignment: left;
+    -fx-alignment: CENTER_LEFT;
+    -fx-size: 50;
+}
+
+.table-row-cell:selected {
+   -fx-background-color: #265D83; 
+       -fx-text-fill: white;
+   
+       
+}
+.table-view:row-selection {
+	    -fx-text-alignment: left;
+    -fx-alignment: CENTER_LEFT;
+	
+    -fx-background-color: linear-gradient(to top, #F39292, #98B4C8);
+}
+
+.table-row-cell {
+	     -fx-alignment: CENTER-RIGHT;
+	    -fx-table-cell-border-color: transparent;
+	
+	-fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-cell-size: 35px;
+    -fx-text-fill: #275273;
+    -fx-font-size: 14px;
+
+
+}
+
+.table-column {
+  -fx-alignment: CENTER-RIGHT;
+}
+
+.menuBar {
+    -fx-background-color: #C1D1DB;
+}
+/* 
+.menuToggle {
+    -fx-background-radius: 5.0, 5.0, 5.0;
+    -fx-text-fill: #265D83;
+    -fx-background-color: #E0EDFF;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.menuToggle:hover {
+    -fx-background-color: #98B4C8;
+    -fx-font-weight: bold;
+}
+
+.menuToggle:pressed {
+    -fx-background-color: #F39292;
+    -fx-text-fill: white;
+}
+
+.menuToggle:selected {
+    -fx-background-radius: 5.0, 5.0, 5.0;
+    -fx-background-color: #F39292;
+
+}
+*/
+/*TILTED PANE*/

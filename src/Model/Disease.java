@@ -5,47 +5,94 @@ import java.util.HashSet;
 
 import Exceptions.DiseaseWithNoSymptomsException;
 import Utils.Symptoms;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Disease implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9054769563038430354L;
 	private static int ID = 1;
 
-	private int id;
-	private String name;
-	private HashSet<Symptoms> symptoms;
+	private transient SimpleIntegerProperty id;
+	private transient SimpleStringProperty diseaseName;
+	private transient SimpleListProperty<Symptoms> symptoms;
 
-	public Disease(String name) {
+	private int _id;
+	private String _diseaseName;
+	private HashSet<Symptoms> _symptoms;
+
+	public Disease(String diseaseName) {
 		super();
-		this.id = ID++;
-		this.name = name;
-		this.symptoms = new HashSet<Symptoms>();
+		setId(ID++);
+		setDiseaseName(diseaseName);
+		this._symptoms = new HashSet<Symptoms>();
+		this.symptoms = new SimpleListProperty<>(getSymptomsObservableList());
+
 	}
 
-	public Disease(int id, String name, HashSet<Symptoms> syms) {
+	public Disease(String diseaseName, HashSet<Symptoms> symptoms) {
 		super();
-		this.id = id;
-		this.name = name;
-		this.symptoms = new HashSet<Symptoms>();
-		this.symptoms.addAll(syms);
+		setId(ID++);
+		setDiseaseName(diseaseName);
+		this._symptoms = new HashSet<Symptoms>();
+		setSymptoms(symptoms);
+		this.symptoms = new SimpleListProperty<>(getSymptomsObservableList());
+
 	}
 
 	public Disease(int id) {
-		this.id = id;
+		this._id = id;
 	}
 
+	/*
+	 * field getters
+	 */
+
 	public int getId() {
-		return id;
+		if (id == null) {
+			return _id;
+		} else {
+			return id.get();
+		}
 	}
 
 	public String getName() {
-		return name;
+		if (diseaseName == null) {
+			return _diseaseName;
+		} else {
+			return diseaseName.get();
+		}
 	}
 
 	public HashSet<Symptoms> getSymptoms() {
-		return symptoms;
+		return _symptoms;
+	}
+
+	/*
+	 * field setters
+	 */
+
+	public void setId(int id) {
+		if (this.id == null) {
+			_id = id;
+		} else {
+			this.id.set(id);
+		}
+	}
+
+	public void setDiseaseName(String diseaseName) {
+		if (this.diseaseName == null) {
+			_diseaseName = diseaseName;
+		} else {
+			this.diseaseName.set(diseaseName);
+		}
 	}
 
 	public String setSymptoms(HashSet<Symptoms> symptoms) {
@@ -53,7 +100,7 @@ public class Disease implements Serializable {
 			if (symptoms.isEmpty()) {
 				throw new DiseaseWithNoSymptomsException();
 			}
-			this.symptoms = symptoms;
+			this._symptoms = symptoms;
 			return "Success";
 		} catch (DiseaseWithNoSymptomsException e) {
 			ID--;
@@ -61,16 +108,39 @@ public class Disease implements Serializable {
 		}
 	}
 
+	/*
+	 * properties getters
+	 */
+
+	public IntegerProperty idProperty() {
+		if (id == null) {
+			id = new SimpleIntegerProperty(_id);
+		}
+		return id;
+	}
+
+	public StringProperty diseaseNameProperty() {
+		if (diseaseName == null) {
+			diseaseName = new SimpleStringProperty(_diseaseName);
+		}
+		return diseaseName;
+	}
+
+	public ObservableList<Symptoms> getSymptomsObservableList() {
+		ObservableList<Symptoms> output = FXCollections.observableArrayList(getSymptoms());
+		return output;
+	}
+
 	@Override
 	public String toString() {
-		return "Disease [name=" + name + ", symptoms=" + symptoms + "]";
+		return "Disease [name=" + _diseaseName + ", symptoms=" + _symptoms + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		result = prime * result + _id;
 		return result;
 	}
 
@@ -86,7 +156,7 @@ public class Disease implements Serializable {
 			return false;
 		}
 		Disease other = (Disease) obj;
-		if (id != other.id) {
+		if (_id != other._id) {
 			return false;
 		}
 		return true;

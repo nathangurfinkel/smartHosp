@@ -7,13 +7,13 @@ import Utils.Symptoms;
 
 public class ViralDisease extends Disease implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9054769563038430354L;
 	private boolean isInfectious;
 
-	public ViralDisease(int id, String name, HashSet<Symptoms> symptoms, boolean isInfectious) {
-		super(id, name, symptoms);
+	public ViralDisease(String name, HashSet<Symptoms> symptoms, boolean isInfectious) {
+		super(name, symptoms);
 		this.isInfectious = isInfectious;
 	}
 

@@ -3,28 +3,39 @@ package Model;
 import java.io.Serializable;
 import java.util.HashSet;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class SubDepartment implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9054769563038430354L;
 	private static int ID = 1;
 
+	private transient ObservableList<Patient> patients = FXCollections.observableArrayList();
+	private transient ObservableList<Doctor> doctors = FXCollections.observableArrayList();
+	private transient ObservableList<Nurse> nurses = FXCollections.observableArrayList();
+	private transient ObservableList<PatientReport> reports = FXCollections.observableArrayList();
+	private transient SimpleObjectProperty<Department> department;
+
 	private int id;
-	private HashSet<Patient> patients;
-	private HashSet<Doctor> doctors;
-	private HashSet<Nurse> nurses;
-	private HashSet<PatientReport> reports;
-	private Department department;
+	private HashSet<Patient> _patients;
+	private HashSet<Doctor> _doctors;
+	private HashSet<Nurse> _nurses;
+	private HashSet<PatientReport> _reports;
+	private Department _department;
 
 	public SubDepartment(Department d) {
 		super();
 		id = ID++;
-		patients = new HashSet<Patient>();
-		doctors = new HashSet<Doctor>();
-		nurses = new HashSet<Nurse>();
-		reports = new HashSet<PatientReport>();
-		department = d;
+		_patients = new HashSet<Patient>();
+		_doctors = new HashSet<Doctor>();
+		_nurses = new HashSet<Nurse>();
+		_reports = new HashSet<PatientReport>();
+		_department = d;
 
 	}
 
@@ -37,22 +48,59 @@ public class SubDepartment implements Serializable {
 	}
 
 	public HashSet<Patient> getPatients() {
-		return patients;
+		return _patients;
 	}
 
 	public HashSet<Doctor> getDoctors() {
-		return doctors;
+		return _doctors;
 	}
 
 	public HashSet<Nurse> getNurses() {
-		return nurses;
+		return _nurses;
 	}
 
 	public HashSet<PatientReport> getReports() {
-		return reports;
+		return _reports;
 	}
 
 	public Department getDepartment() {
+		return _department;
+	}
+
+	/*
+	 * properties getters
+	 */
+
+	public ObservableList<Patient> getPatientsObservableList() {
+		if (patients == null) {
+			patients = FXCollections.observableArrayList(getPatients());
+		}
+		return patients;
+	}
+
+	public ObservableList<Doctor> getDoctorsObservableList() {
+		if (doctors == null) {
+			doctors = FXCollections.observableArrayList(getDoctors());
+		}
+		return doctors;
+	}
+
+	public ObservableList<Nurse> getNursesObservableList() {
+		if (nurses == null) {
+			nurses = FXCollections.observableArrayList(getNurses());
+		}
+		return nurses;
+	}
+
+	public ObservableList<PatientReport> getReportsObservableList() {
+		ObservableList<PatientReport> output = FXCollections.observableArrayList(getReports());
+		return output;
+	}
+
+	public ObjectProperty<Department> departmentProperty() {
+		if (department == null) {
+			department = new SimpleObjectProperty<Department>(_department);
+		}
 		return department;
 	}
 
@@ -84,7 +132,7 @@ public class SubDepartment implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SubDepartment [id=" + id + ", department=" + department + "]";
+		return "SubDepartment [id=" + id + ", department=" + _department + "]";
 	}
 
 	public boolean findDoctor(Doctor doc) {
@@ -103,11 +151,13 @@ public class SubDepartment implements Serializable {
 		return getReports().contains(patientReport);
 	}
 
-	public void addDoctor(Doctor doc) {
-		if (findDoctor(doc)) {
-			System.err.printf("%s should not be in Sdept %d\n", doc, getId());
+	public void addDoctor(Doctor doctor) {
+		if (findDoctor(doctor)) {
+			System.err.printf("%s should not be in Sdept %d\n", doctor, getId());
 		}
-		getDoctors().add(doc);
+
+		System.out.println("Adding doctor: " + doctor + " to :" + this + "with effect: " + getDoctorsObservableList().add(doctor));
+		getDoctors().add(doctor);
 
 	}
 
@@ -115,6 +165,7 @@ public class SubDepartment implements Serializable {
 		if (findNurse(nurse)) {
 			System.err.printf("%s should not be in Sdept %d\n", nurse, getId());
 		}
+		getNursesObservableList().add(nurse);
 		getNurses().add(nurse);
 
 	}
@@ -123,6 +174,7 @@ public class SubDepartment implements Serializable {
 		if (findPatient(patient)) {
 			System.err.printf("%s should not be in Sdept %d\n", patient, getId());
 		}
+		System.out.println("Adding patient: " + patient + " to :" + this + "with effect: " + getPatientsObservableList().add(patient));
 		getPatients().add(patient);
 
 	}
@@ -135,17 +187,20 @@ public class SubDepartment implements Serializable {
 
 	}
 
-	public boolean removeDoctor(Doctor doc) {
-		return getDoctors().remove(doc);
+	public boolean removeDoctor(Doctor doctor) {
+		getDoctorsObservableList().remove(doctor);
+		return getDoctors().remove(doctor);
 
 	}
 
 	public boolean removeNurse(Nurse nurse) {
+		getNursesObservableList().remove(nurse);
 		return getNurses().remove(nurse);
 
 	}
 
 	public boolean removePatient(Patient patient) {
+		System.out.println("REMOVING is: " + getPatientsObservableList().remove(patient));
 
 		return getPatients().remove(patient);
 

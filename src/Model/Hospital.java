@@ -1,22 +1,13 @@
 package Model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map.Entry;
-import java.util.Observable;
 import java.util.TreeSet;
 
 import Exceptions.CannotReleasePatientException;
@@ -25,70 +16,59 @@ import Utils.ReleaseNote;
 import Utils.Specialization;
 import Utils.Symptoms;
 import Utils.Treatments;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 
 public class Hospital implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9054769563038430354L;
 	private static Hospital theHospital = null;
 
-	private static Hospital deserialize() {
-		Hospital instance = new Hospital();
-		try {
-			System.out.println("DESERIALIZING");
-			FileInputStream inputFile = new FileInputStream("Hospital.ser");
-			ObjectInputStream inStream = new ObjectInputStream(inputFile);
-			instance = (Hospital) inStream.readObject();
+	/*
+	 * private static Hospital deserialize() { Hospital instance = new Hospital();
+	 * try { System.out.println("DESERIALIZING"); FileInputStream inputFile = new
+	 * FileInputStream("Hospital.ser"); ObjectInputStream inStream = new
+	 * ObjectInputStream(inputFile); instance = (Hospital) inStream.readObject();
+	 * inputFile.close(); inStream.close(); return instance; } catch (IOException |
+	 * ClassNotFoundException e) { // TODO Auto-generated catch block
+	 * e.printStackTrace(); } return instance;
+	 *
+	 * }
+	 */
 
-			inputFile.close();
-			inStream.close();
-			return instance;
-		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return instance;
+	/*
+	 * public static Hospital getInstance() {
+	 *
+	 * try { File serializedFile = new File("Hospital.ser");
+	 *
+	 * if (theHospital == null && serializedFile.exists()) {
+	 * System.out.println("FILE EXISTS, INVOKING DESERIALIZNG"); theHospital =
+	 * deserialize(); } else if ((theHospital == null) && (serializedFile.exists()
+	 * != true)) { System.out.println("FILE Does NOT EXIST"); theHospital = new
+	 * Hospital(); }
+	 *
+	 * } catch (Exception e) { e.printStackTrace(); }
+	 *
+	 * if (theHospital == null) { return new Hospital(); } else { return
+	 * theHospital; } }
+	 */
 
-	}
+	/*
+	 * private static void serialize() { try { System.out.println("SERIALIZING");
+	 * FileOutputStream outputFile = new FileOutputStream("Hospital.ser");
+	 * ObjectOutputStream outputStream = new ObjectOutputStream(outputFile);
+	 * outputStream.writeObject(theHospital); outputFile.close();
+	 * outputFile.close(); } catch (IOException e) { // TODO Auto-generated catch
+	 * block e.printStackTrace(); }
+	 *
+	 * }
+	 */
 
 	public static Hospital getInstance() {
-		try {
-			File serializedFile = new File("Hospital.ser");
-			if (theHospital == null && serializedFile.exists()) {
-				System.out.println("FILE EXISTS, INVOKING DESERIALIZNG");
-
-				theHospital = deserialize();
-			}
-
-			else if (theHospital == null && !serializedFile.exists()) {
-				System.out.println("FILE Does NOT EXIST");
-				theHospital = new Hospital();
-				Hospital.serialize();
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (theHospital == null) {
+			theHospital = new Hospital();
 		}
 		return theHospital;
-	}
-
-	private static void serialize() {
-		try {
-			System.out.println("SERIALIZING");
-			FileOutputStream outputFile = new FileOutputStream("Hospital.ser");
-			ObjectOutputStream outputStream = new ObjectOutputStream(outputFile);
-			outputStream.writeObject(theHospital);
-			outputFile.close();
-			outputFile.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
@@ -103,7 +83,9 @@ public class Hospital implements Serializable {
 
 	private HashMap<Integer, PatientReport> reportsById;
 
-	private HashMap<Integer, SubDepartment> subDepartmentById;
+	private HashMap<Integer, SubDepartment> subDepartmentsById;
+
+	private HashMap<String, ProgramUser> programUsersByLogin;
 
 	private Hospital() {
 		this.patientsById = new HashMap<>();
@@ -113,19 +95,36 @@ public class Hospital implements Serializable {
 		this.hotelPatientsById = new HashMap<>();
 		this.diseasesById = new HashMap<>();
 		this.departmentsById = new HashMap<>();
-		this.subDepartmentById = new HashMap<>();
+		this.subDepartmentsById = new HashMap<>();
 		this.doctorsByPatient = new HashMap<>();
 		this.nursesByPatient = new HashMap<>();
+		this.programUsersByLogin = new HashMap<>();
+	}
 
+	public boolean addProgramUser(ProgramUser pu) {
+
+		if (pu == null || programUsersByLogin == null) {
+			/*
+			 * System.out.println("pu or map empty");
+			 */ return false;
+		} else {
+			programUsersByLogin.put(pu.getLogin(), pu);
+			// Hospital.serialize();
+		}
+		return true;
 	}
 
 	public boolean addDepartment(Department d) {
+		/*
+		 * System.out.println("adding dept " + d + " to: " + departmentsById);
+		 */
 		if (d == null) {
 			return false;
 		}
 		if (!this.getDepartmentsById().containsValue(d)) {
+
 			this.getDepartmentsById().put(d.getId(), d);
-			Hospital.serialize();
+			// Hospital.serialize();
 		} else {
 			return false;
 		}
@@ -138,29 +137,35 @@ public class Hospital implements Serializable {
 		}
 		if (!this.getDiseasesById().containsValue(disease)) {
 			this.getDiseasesById().put(disease.getId(), disease);
-			Hospital.serialize();
+			// Hospital.serialize();
 
 			return true;
 		}
 		return false;
 	}
 
-	public boolean addDoctor(Doctor doc, SubDepartment s) {
-		if (doc == null || s == null) {
+	public boolean addDoctor(Doctor doctor, SubDepartment s) {
+		/*
+		 * System.out.println("adding doc " + doc + " to: " + s);
+		 */
+		if (doctor == null || s == null) {
 			return false;
 		}
-		if (!this.getDoctorsById().containsValue(doc)) {
-			this.getDoctorsById().put(doc.getId(), doc);
+		if (!this.getDoctorsById().containsValue(doctor)) {
+			this.getDoctorsById().put(doctor.getId(), doctor);
 		} else {
 			return false;
 		}
-		s.addDoctor(doc);
-		Hospital.serialize();
+
+		this.getProgramUsersByLogin().put(doctor.getLogin(), doctor);
+		s.addDoctor(doctor);
+		// Hospital.serialize();
 
 		return true;
 	}
 
 	public boolean addNurse(Nurse nurse, SubDepartment s) {
+
 		if (nurse == null || s == null) {
 			return false;
 		}
@@ -169,8 +174,11 @@ public class Hospital implements Serializable {
 		} else {
 			return false;
 		}
+		this.getProgramUsersByLogin().put(nurse.getLogin(), nurse);
+
 		s.addNurse(nurse);
-		Hospital.serialize();
+
+		// Hospital.serialize();
 
 		return true;
 	}
@@ -185,7 +193,7 @@ public class Hospital implements Serializable {
 			return false;
 		}
 		s.addPatient(patient);
-		Hospital.serialize();
+		// Hospital.serialize();
 
 		return true;
 	}
@@ -204,26 +212,38 @@ public class Hospital implements Serializable {
 		if (note == null) {
 			return null;
 		}
-		PatientReport pr = new PatientReport(pat, doc, date, des, pat.getsDepartment(), note);
+		PatientReport pr = new PatientReport(pat, doc, date, des, pat.getSubDepartment(), note);
 		this.getReportsById().put(pr.getId(), pr);
-		pat.getsDepartment().addPatientReport(pr);
-		Hospital.serialize();
+		pat.getSubDepartment().addPatientReport(pr);
+		// Hospital.serialize();
 
 		return pr;
 
 	}
 
-	public boolean addSubDepartment(Department d, SubDepartment s) {
-		if (this.getSubDepartmentById().put(s.getId(), s) == null) {
-			Hospital.serialize();
-			return true;
-		} else {
-			Hospital.serialize();
+	public boolean addSubDepartment(Department department, SubDepartment subDepartment) {
+		if (department == null || subDepartment == null) {
 			return false;
 		}
+		if (!this.getDepartmentsById().containsValue(department)) {
+			return false;
+		} else {
+			this.getDepartmentsById().get(department.getId()).addSubDepartment(subDepartment);
+		}
+		this.getSubDepartmentsById().put(subDepartment.getId(), subDepartment);
+		return true;
 
+		// Hospital.serialize();
 	}
 
+	/*
+	 *
+	 *
+	 * // Hospital.serialize(); return true; } else { // Hospital.serialize();
+	 * return false; }
+	 *
+	 * }
+	 */
 	public Nurse findHardestWorkingNurse() {
 		HashMap<Nurse, Integer> nursesPatients = new HashMap<>();
 		for (Patient p : this.getPatientsById().values()) {
@@ -255,8 +275,7 @@ public class Hospital implements Serializable {
 		ArrayList<Patient> patients = new ArrayList<>();
 		for (Patient p : this.getPatientsById().values()) {
 			if (this.getDoctorsByPatient().containsKey(p)) {
-				if (this.getDoctorsByPatient().get(p).contains(d) && (p.getCondition().equals(Condition.CRITICAL)
-						|| p.getCondition().equals(Condition.SERIOUS))) {
+				if (this.getDoctorsByPatient().get(p).contains(d) && (p.getCondition().equals(Condition.CRITICAL) || p.getCondition().equals(Condition.SERIOUS))) {
 					patients.add(p);
 				}
 			}
@@ -275,12 +294,11 @@ public class Hospital implements Serializable {
 
 	public LinkedList<Patient> getAllDifficultBreathingPatients(Department d) {
 		LinkedList<Patient> patients = new LinkedList<>();
-		for (SubDepartment s : d.getSdepts()) {
+		for (SubDepartment s : d.getSubDepartments()) {
 			for (Patient p : s.getPatients()) {
-				if (p.getDis().getSymptoms().contains(Symptoms.DIFFICULTY_BREATHING)
-						&& this.getNursesByPatient().containsKey(p)) {
+				if (p.getDisease().getSymptoms().contains(Symptoms.DIFFICULTY_BREATHING) && this.getNursesByPatient().containsKey(p)) {
 					for (Nurse n : this.getNursesByPatient().get(p)) {
-						if (n.getTreat().equals(Treatments.BREATHING_SUPPORT)) {
+						if (n.getTreatments().equals(Treatments.BREATHING_SUPPORT)) {
 							patients.add(p);
 							break;
 						}
@@ -292,12 +310,12 @@ public class Hospital implements Serializable {
 
 			@Override
 			public int compare(Patient o1, Patient o2) {
-				if (o1.getsDepartment().getId() != o2.getsDepartment().getId()) {
-					Integer o1SubID = o1.getsDepartment().getId();
-					Integer o2SubID = o2.getsDepartment().getId();
+				if (o1.getSubDepartment().getId() != o2.getSubDepartment().getId()) {
+					Integer o1SubID = o1.getSubDepartment().getId();
+					Integer o2SubID = o2.getSubDepartment().getId();
 					return o2SubID.compareTo(o1SubID);
 				} else {
-					return o2.getLname().compareTo(o1.getLname());
+					return o2.getLastName().compareTo(o1.getLastName());
 				}
 			}
 		});
@@ -315,7 +333,7 @@ public class Hospital implements Serializable {
 			}
 		});
 		HashMap<SubDepartment, Integer> subCountGoodPatients = new HashMap<>();
-		for (SubDepartment s : this.getSubDepartmentById().values()) {
+		for (SubDepartment s : this.getSubDepartmentsById().values()) {
 			int counter = 0;
 			for (Patient p : s.getPatients()) {
 				if (p.getCondition().equals(Condition.GOOD)) {
@@ -351,10 +369,10 @@ public class Hospital implements Serializable {
 
 			@Override
 			public int compare(Patient o1, Patient o2) {
-				if (!o1.getLname().equals(o2.getLname())) {
-					return o1.getLname().compareTo(o2.getLname());
+				if (!o1.getLastName().equals(o2.getLastName())) {
+					return o1.getLastName().compareTo(o2.getLastName());
 				} else {
-					return o1.getFname().compareTo(o2.getFname());
+					return o1.getFirstName().compareTo(o2.getFirstName());
 				}
 			}
 		});
@@ -366,7 +384,7 @@ public class Hospital implements Serializable {
 			boolean hasDoctor = false;
 			if (this.getNursesByPatient().containsKey(p)) {
 				for (Nurse n : this.getNursesByPatient().get(p)) {
-					if (n.getTreat().equals(Treatments.STEROIDS)) {
+					if (n.getTreatments().equals(Treatments.STEROIDS)) {
 						hasNurse = true;
 						break;
 					}
@@ -374,7 +392,7 @@ public class Hospital implements Serializable {
 			}
 			if (hasNurse && this.getDoctorsByPatient().containsKey(p)) {
 				for (Doctor d : this.getDoctorsByPatient().get(p)) {
-					if (d.getSpec().equals(Specialization.NEUROLOGY)) {
+					if (d.getSpecialization().equals(Specialization.NEUROLOGY)) {
 						hasDoctor = true;
 						break;
 					}
@@ -417,7 +435,7 @@ public class Hospital implements Serializable {
 			}
 		});
 		for (PatientReport pr : this.getReportsById().values()) {
-			if (pr.getDoctor().getSpec().equals(s)) {
+			if (pr.getDoctor().getSpecialization().equals(s)) {
 				doctors.add(pr.getDoctor());
 			}
 		}
@@ -473,15 +491,15 @@ public class Hospital implements Serializable {
 	}
 
 	public SubDepartment getRealSubDepartment(int sid) {
-		return this.getSubDepartmentById().get(sid);
+		return this.getSubDepartmentsById().get(sid);
 	}
 
 	public HashMap<Integer, PatientReport> getReportsById() {
 		return this.reportsById;
 	}
 
-	public HashMap<Integer, SubDepartment> getSubDepartmentById() {
-		return this.subDepartmentById;
+	public HashMap<Integer, SubDepartment> getSubDepartmentsById() {
+		return this.subDepartmentsById;
 	}
 
 	public boolean printAllDoctors(Department dep) {
@@ -527,7 +545,7 @@ public class Hospital implements Serializable {
 		if (doc == null) {
 			return false;
 		}
-		doc.getsDepartment().removeDoctor(doc);
+		doc.getSubDepartment().removeDoctor(doc);
 		this.getDoctorsById().remove(doc.getId(), doc);
 		return true;
 
@@ -537,7 +555,7 @@ public class Hospital implements Serializable {
 		if (nurse == null) {
 			return false;
 		}
-		nurse.getsDepartment().removeNurse(nurse);
+		nurse.getSubDepartment().removeNurse(nurse);
 		this.getNursesById().remove(nurse.getId(), nurse);
 		return true;
 
@@ -547,7 +565,8 @@ public class Hospital implements Serializable {
 		if (patient == null) {
 			return false;
 		}
-		patient.getsDepartment().removePatient(patient);
+		System.out.println("REMOVING PATIENT IN HOSPITAL: " + patient.getSubDepartment().removePatient(patient));
+
 		this.getPatientsById().remove(patient.getId(), patient);
 		this.getDoctorsByPatient().remove(patient);
 		this.getNursesByPatient().remove(patient);
@@ -582,7 +601,7 @@ public class Hospital implements Serializable {
 	}
 
 	public boolean removeSubDepartment(SubDepartment s) {
-		return this.getSubDepartmentById().remove(s.getId(), s);
+		return this.getSubDepartmentsById().remove(s.getId(), s);
 	}
 
 	public String removeToHotelPatient(Patient patient) {
@@ -641,13 +660,13 @@ public class Hospital implements Serializable {
 	}
 
 	public void setSubDepartmentById(HashMap<Integer, SubDepartment> subDepartmentById) {
-		this.subDepartmentById = subDepartmentById;
+		this.subDepartmentsById = subDepartmentById;
 	}
 
 	public TreeSet<Patient> treatDiseases(Department d) {
 		TreeSet<Patient> viralPatients = new TreeSet<>();
 		TreeSet<Patient> chronicPatients = new TreeSet<>();
-		for (SubDepartment s : d.getSdepts()) {
+		for (SubDepartment s : d.getSubDepartments()) {
 			Iterator<Doctor> doctorIter = s.getDoctors().iterator();
 			for (Patient p : s.getPatients()) {
 				if (!doctorIter.hasNext()) {
@@ -656,11 +675,11 @@ public class Hospital implements Serializable {
 				doctorIter.next().checkDisease(p);
 			}
 		}
-		for (SubDepartment s : d.getSdepts()) {
+		for (SubDepartment s : d.getSubDepartments()) {
 			for (Patient p : s.getPatients()) {
-				if (p.getDis() instanceof ChronicDisease) {
+				if (p.getDisease() instanceof ChronicDisease) {
 					chronicPatients.add(p);
-				} else if (p.getDis() instanceof ViralDisease) {
+				} else if (p.getDisease() instanceof ViralDisease) {
 					viralPatients.add(p);
 				}
 			}
@@ -679,7 +698,7 @@ public class Hospital implements Serializable {
 			}
 
 		});
-		for (SubDepartment s : d.getSdepts()) {
+		for (SubDepartment s : d.getSubDepartments()) {
 			Iterator<Nurse> nurseIter = s.getNurses().iterator();
 			for (Patient p : s.getPatients()) {
 				Condition oldCondition = p.getCondition();
@@ -693,6 +712,14 @@ public class Hospital implements Serializable {
 			}
 		}
 		return patients;
+	}
+
+	public HashMap<String, ProgramUser> getProgramUsersByLogin() {
+		return programUsersByLogin;
+	}
+
+	public void setProgramUsersByLogin(HashMap<String, ProgramUser> programUsersByLogin) {
+		this.programUsersByLogin = programUsersByLogin;
 	}
 
 }

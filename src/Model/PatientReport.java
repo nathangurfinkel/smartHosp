@@ -7,7 +7,7 @@ import Utils.ReleaseNote;
 
 public class PatientReport implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9054769563038430354L;
 	private static int ID = 1;
@@ -17,18 +17,17 @@ public class PatientReport implements Serializable {
 	private Doctor doctor;
 	private Date date;
 	private Disease disease;
-	private SubDepartment sdept;
+	private SubDepartment subDepartment;
 	private ReleaseNote note;
 
-	public PatientReport(Patient patient, Doctor doctor, Date date, Disease disease, SubDepartment sdept,
-			ReleaseNote note) {
+	public PatientReport(Patient patient, Doctor doctor, Date date, Disease disease, SubDepartment subDepartment, ReleaseNote note) {
 		super();
 		this.id = ID++;
 		this.patient = patient;
 		this.doctor = doctor;
 		this.date = date;
 		this.disease = disease;
-		this.sdept = sdept;
+		this.subDepartment = subDepartment;
 		this.note = note;
 	}
 
@@ -57,11 +56,11 @@ public class PatientReport implements Serializable {
 	}
 
 	public SubDepartment getSdept() {
-		return sdept;
+		return subDepartment;
 	}
 
 	public void setSdept(SubDepartment sdept) {
-		this.sdept = sdept;
+		this.subDepartment = sdept;
 	}
 
 	public ReleaseNote getNote() {
@@ -96,8 +95,7 @@ public class PatientReport implements Serializable {
 
 	@Override
 	public String toString() {
-		return "PatientReport [patient=" + patient + ", doctor=" + doctor + ", date=" + date + ", disease=" + disease
-				+ "]";
+		return "PatientReport [patient=" + patient + ", doctor=" + doctor + ", date=" + date + ", disease=" + disease + "]";
 	}
 
 }

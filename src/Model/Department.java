@@ -5,53 +5,141 @@ import java.util.ArrayList;
 
 import Exceptions.SubDepartmentNotEmptyException;
 import Utils.Specialization;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Department implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 9054769563038430354L;
 	private static int ID = 1;
 
-	private int id;
+	private transient SimpleIntegerProperty id;
+	private transient SimpleStringProperty departmentName;
+	private transient SimpleListProperty<SubDepartment> subDepartments;
+	private transient SimpleObjectProperty<Specialization> specialization;
 
-	private String deptName;
-	private ArrayList<SubDepartment> sdepts;
-	private Specialization spec;
+	private int _id;
+	private String _departmentName;
+	private ArrayList<SubDepartment> _subDepartments;
+	private Specialization _specialization;
 
-	public Department(String deptName, Specialization spec) {
+	public Department(String departmentName, Specialization specialization) {
 		super();
-		this.id = ID++;
-		this.deptName = deptName;
-		this.spec = spec;
-		this.sdepts = new ArrayList<SubDepartment>();
+		setId(ID++);
+		setDepartmentName(departmentName);
+		setSpecialization(specialization);
+		this._subDepartments = new ArrayList<SubDepartment>();
+		this.subDepartments = new SimpleListProperty<>(getSubDepartmentsObservableList());
 	}
 
-	Department(int id) {
-		this.id = id;
+	public Department(int id) {
+		this._id = id;
 	}
+
+	/*
+	 * field getters
+	 */
 
 	public int getId() {
+		if (id == null) {
+			return _id;
+		} else {
+			return id.get();
+		}
+	}
+
+	public String getDepartmentName() {
+		if (departmentName == null) {
+			return _departmentName;
+		} else {
+			return departmentName.get();
+		}
+	}
+
+	public ArrayList<SubDepartment> getSubDepartments() {
+		return _subDepartments;
+	}
+
+	public Specialization getSpecialization() {
+		if (specialization == null) {
+			return _specialization;
+		} else {
+			return specialization.get();
+		}
+	}
+
+	/*
+	 * field setters
+	 */
+
+	public void setId(int id) {
+		if (this.id == null) {
+			_id = id;
+		} else {
+			this.id.set(id);
+		}
+	}
+
+	public void setDepartmentName(String departmentName) {
+		if (this.departmentName == null) {
+			_departmentName = departmentName;
+		} else {
+			this.departmentName.set(departmentName);
+		}
+	}
+
+	public void setSpecialization(Specialization specialization) {
+		if (this.specialization == null) {
+			_specialization = specialization;
+		} else {
+			this.specialization.set(specialization);
+		}
+	}
+
+	/*
+	 * properties getters
+	 */
+
+	public IntegerProperty idProperty() {
+		if (id == null) {
+			id = new SimpleIntegerProperty(_id);
+		}
 		return id;
 	}
 
-	public String getDeptName() {
-		return deptName;
+	public StringProperty departmentNameProperty() {
+		if (departmentName == null) {
+			departmentName = new SimpleStringProperty(_departmentName);
+		}
+		return departmentName;
 	}
 
-	public ArrayList<SubDepartment> getSdepts() {
-		return sdepts;
+	public ObjectProperty<Specialization> specializationProperty() {
+		if (specialization == null) {
+			specialization = new SimpleObjectProperty<Specialization>(_specialization);
+		}
+		return specialization;
 	}
 
-	public Specialization getSpec() {
-		return spec;
+	public ObservableList<SubDepartment> getSubDepartmentsObservableList() {
+		ObservableList<SubDepartment> output = FXCollections.observableArrayList(getSubDepartments());
+		return output;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		result = prime * result + _id;
 		return result;
 	}
 
@@ -67,7 +155,7 @@ public class Department implements Serializable {
 			return false;
 		}
 		Department other = (Department) obj;
-		if (id != other.id) {
+		if (_id != other._id) {
 			return false;
 		}
 		return true;
@@ -75,22 +163,27 @@ public class Department implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Department [deptName=" + deptName + ", spec=" + spec + "]";
+		return "Department [deptName=" + _departmentName + ", spec=" + _specialization + "]";
 	}
 
 	/**
 	 * a method that adds a subdepartment to subdepartment data structure and to the
 	 * Hospital
-	 * 
-	 * @param subDepartment
-	 * @return true/false
+	 *
+	 * @param  subDepartment
+	 * @return               true/false
 	 */
-	public boolean addSubDepartment(SubDepartment s) {
-		if (getSdepts().contains(s) || Hospital.getInstance().getRealSubDepartment(s.getId()) != null) {
+	public boolean addSubDepartment(SubDepartment subDepartment) {
+		if (getSubDepartments().contains(subDepartment) || Hospital.getInstance().getRealSubDepartment(subDepartment.getId()) != null) {
+			System.out.println("Department - add subdept method failed 1");
+
 			return false;
 		} else {
-			getSdepts().add(s);
-			if (!Hospital.getInstance().addSubDepartment(this, s)) {
+			getSubDepartments().add(subDepartment);
+
+			if (!Hospital.getInstance().addSubDepartment(this, subDepartment)) {
+				System.out.println("Department - add subdept method failed 2");
+
 				return false;
 			}
 		}
@@ -100,27 +193,26 @@ public class Department implements Serializable {
 	/**
 	 * a method that tries to delete a subdepartment, if its not empty it will
 	 * transfer the sub to another sub
-	 * 
-	 * @param subdepartment to Delete
-	 * @param subdepartment to Move To
-	 * @return string
+	 *
+	 * @param  subdepartment to Delete
+	 * @param  subdepartment to Move To
+	 * @return               string
 	 */
 	public String removeSubDepartment(SubDepartment toDelete, SubDepartment toMoveTo) {
-		if (!getSdepts().contains(toDelete)) {
+		if (!getSubDepartments().contains(toDelete)) {
 			return null;
 		} else {
 			try {
-				if (!toDelete.getPatients().isEmpty() || !toDelete.getDoctors().isEmpty()
-						|| !toDelete.getNurses().isEmpty() || !toDelete.getReports().isEmpty()) {
+				if (!toDelete.getPatients().isEmpty() || !toDelete.getDoctors().isEmpty() || !toDelete.getNurses().isEmpty() || !toDelete.getReports().isEmpty()) {
 					throw new SubDepartmentNotEmptyException(toDelete.getId());
 				}
-				getSdepts().remove(toDelete);
+				getSubDepartments().remove(toDelete);
 				Hospital.getInstance().removeSubDepartment(toDelete);
 
 			} catch (SubDepartmentNotEmptyException e) {
 				moveSubDepartment(toDelete, toMoveTo);
-				getSdepts().remove(toDelete);
-				Hospital.getInstance().getSubDepartmentById().remove(toDelete.getId(), toDelete);
+				getSubDepartments().remove(toDelete);
+				Hospital.getInstance().getSubDepartmentsById().remove(toDelete.getId(), toDelete);
 				return e.toString();
 			}
 		}
@@ -130,19 +222,19 @@ public class Department implements Serializable {
 	/**
 	 * a method that transfers a subdepartment data structures to another
 	 * subdepartment
-	 * 
+	 *
 	 * @param from
 	 * @param to
 	 */
 	public void moveSubDepartment(SubDepartment a, SubDepartment b) {
 		for (Patient p : a.getPatients()) {
-			p.setsDepartment(b);
+			p.setSubDepartment(b);
 		}
 		for (Doctor d : a.getDoctors()) {
-			d.setsDepartment(b);
+			d.setSubDepartment(b);
 		}
 		for (Nurse n : a.getNurses()) {
-			n.setsDepartment(b);
+			n.setSubDepartment(b);
 		}
 		for (PatientReport rp : a.getReports()) {
 			rp.setSdept(b);
@@ -155,7 +247,7 @@ public class Department implements Serializable {
 
 	public String printAllDoctors() {
 		String toReturn = "All doctors for " + this + "\n";
-		for (SubDepartment s : getSdepts()) {
+		for (SubDepartment s : getSubDepartments()) {
 			for (Doctor d : s.getDoctors()) {
 				toReturn += d.toStringLong() + "\n";
 			}
@@ -165,7 +257,7 @@ public class Department implements Serializable {
 
 	public String printAllNurses() {
 		String toReturn = "All nurses for " + this + "\n";
-		for (SubDepartment s : getSdepts()) {
+		for (SubDepartment s : getSubDepartments()) {
 			for (Nurse n : s.getNurses()) {
 				toReturn += n.toStringLong() + "\n";
 			}
@@ -175,7 +267,7 @@ public class Department implements Serializable {
 
 	public String printAllPatients() {
 		String toReturn = "All patients for " + this + "\n";
-		for (SubDepartment s : getSdepts()) {
+		for (SubDepartment s : getSubDepartments()) {
 			for (Patient p : s.getPatients()) {
 				toReturn += p.toStringLong() + "\n";
 			}

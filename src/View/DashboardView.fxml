@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.StackedBarChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="root" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox prefHeight="50.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label styleClass="labelBig" text="totalPatients">
+               <HBox.margin>
+                  <Insets bottom="25.0" left="50.0" right="50.0" top="25.0" />
+               </HBox.margin>
+            </Label>
+            <Label styleClass="labelBig" text="totalCorona">
+               <HBox.margin>
+                  <Insets bottom="25.0" left="50.0" right="50.0" top="25.0" />
+               </HBox.margin>
+            </Label>
+            <Label styleClass="labelBig" text="totalCritical">
+               <HBox.margin>
+                  <Insets bottom="25.0" left="50.0" right="50.0" top="25.0" />
+               </HBox.margin>
+            </Label>
+            <BarChart>
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </children>
+      </HBox>
+   </top>
+   <right>
+      <PieChart fx:id="conditionPie" prefHeight="476.0" prefWidth="284.0" BorderPane.alignment="CENTER" />
+   </right>
+   <left>
+      <StackedBarChart BorderPane.alignment="CENTER">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </StackedBarChart>
+   </left>
+</BorderPane>
