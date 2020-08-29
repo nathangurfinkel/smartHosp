@@ -479,7 +479,7 @@ public class ViewAndManageViewController {
 
 				Patient p = new Patient(fNameField.getText(), lNameField.getText(), currentSubDepartment, null);
 
-				Disease disease = new Disease(diseaseNameField.getName, symptoms);
+				// Disease disease = new Disease(diseaseNameField.getText(), symptoms);
 				Hospital.getInstance().addPatient(p, currentSubDepartment);
 
 				// table.setItems(currentSubDepartment.getPatientsObservableList());
@@ -635,7 +635,7 @@ public class ViewAndManageViewController {
 	void setStatusButtonHandler(ActionEvent event) {
 		newStatusField.setVisible(true);
 		SFx.slideHorizontally(slideOutPanel, true, 250);
-		newStatusField.isFocused(true);
+		newStatusField.requestFocus();
 
 	}
 
