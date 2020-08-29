@@ -32,6 +32,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -43,6 +44,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -51,6 +53,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import javafx.util.converter.IntegerStringConverter;
 
 public class ViewAndManageViewController {
 
@@ -95,10 +98,15 @@ public class ViewAndManageViewController {
 	@FXML
 	private Label addingBoxLabel, totalLabel, totalCriticalLabel, totalInHotelLabel;
 	@FXML
-	private Label typeLabel;
+	private Label dynamicLabel;
 	@FXML
 	private Pane slideOutPanel, confirmationPopUpPane;
 
+	@FXML
+	private CheckBox coughCheckBox, faintingCheckBox, feverCheckBox, tirednessCheckBox, difficultyBreathingCheckBox, backachesCheckBox;
+
+	@FXML
+	private VBox symptomsVBox;
 	@FXML
 	private HBox confirmationPopUp;
 	@FXML
@@ -111,25 +119,22 @@ public class ViewAndManageViewController {
 	private ComboBox<Treatments> treatsComboBox;
 
 	@FXML
-	private ComboBox<Symptoms> symptomsComboBox;
-
-	@FXML
 	private TableView table;
 
 	@FXML
-	private HBox buttonsHBox, addingBoxFields;
+	private HBox buttonsHBox, addingBoxFields, diseaseHBox;
 
 	@FXML
 	private ToggleButton addToggle;
 
 	@FXML
-	private Button removeButton, setStatusButton, checkPatientButton, addConfirmationButton, getAllDifficultyBreathingPatientsButton, addSymptomButton;
+	private Button removeButton, checkPatientButton, addConfirmationButton, getAllDifficultyBreathingPatientsButton, addSymptomButton;
 
 	@FXML
 	private ComboBox<SubDepartment> subDepartmentComboBox;
 
 	@FXML
-	private Label inLabel;
+	private Label inLabel, diseaseLabel;
 
 	@FXML
 	private ComboBox<Department> departmentComboBox;
@@ -158,8 +163,7 @@ public class ViewAndManageViewController {
 
 	@FXML
 	void addSymptomButtonHandler(ActionEvent event) {
-		ObservableList<Symptoms> symptomsList = FXCollections.observableArrayList();
-		symptomsComboBox.getSelectionModel().getSelectedItem();
+
 	}
 
 	@FXML
@@ -195,6 +199,10 @@ public class ViewAndManageViewController {
 		loadInfoVBox();
 
 		loadChoiceBoxes();
+
+	}
+
+	public void exceptionPopUp() {
 
 	}
 
@@ -306,7 +314,7 @@ public class ViewAndManageViewController {
 	@FXML
 	public void loadLabels() {
 
-		typeLabel.setText("Showing " + currentView.toString().toLowerCase() + " in ");
+		dynamicLabel.setText("Showing " + currentView.toString().toLowerCase() + " in ");
 		addingBoxLabel.setText("Enter new " + currentView.toString().toLowerCase() + "' info:");
 
 	}
@@ -430,15 +438,24 @@ public class ViewAndManageViewController {
 		adderVbox.disableProperty().bind(addToggle.selectedProperty());
 		for (Node n : adderVbox.getChildren()) {
 			if (!(n instanceof Button)) {
+				n.setVisible(false);
 				n.managedProperty().bind(n.visibleProperty());
 			}
 		}
 		switch (currentView) {
 			case PATIENTS: {
+
+				statusField.textProperty().addListener((observable, oldValue, newValue) -> {
+					if (newValue.matches("\\d*")) {
+						return;
+					}
+					statusField.setText(newValue.replaceAll("[^\\d]", ""));
+				});
+				fNameField.setVisible(true);
+				lNameField.setVisible(true);
 				statusField.setVisible(true);
-				diseaseNameField.setVisible(true);
-				symptomsComboBox.setVisible(true);
-				symptomsComboBox.getItems().setAll(Symptoms.values());
+				diseaseLabel.setVisible(true);
+				diseaseHBox.setVisible(true);
 				break;
 
 			}
@@ -477,15 +494,40 @@ public class ViewAndManageViewController {
 		switch (currentView) {
 			case PATIENTS: {
 
-				Patient p = new Patient(fNameField.getText(), lNameField.getText(), currentSubDepartment, null);
+				HashSet<Symptoms> symptoms = new HashSet<>();
+				if (coughCheckBox.isSelected()) {
+					symptoms.add(Symptoms.COUGH);
+				}
+				if (faintingCheckBox.isSelected()) {
+					symptoms.add(Symptoms.FAINTING);
+				}
+				if (feverCheckBox.isSelected()) {
+					symptoms.add(Symptoms.FEVER);
 
-				// Disease disease = new Disease(diseaseNameField.getText(), symptoms);
-				Hospital.getInstance().addPatient(p, currentSubDepartment);
+				}
+				if (tirednessCheckBox.isSelected()) {
+					symptoms.add(Symptoms.TIREDNESS);
+
+				}
+				if (difficultyBreathingCheckBox.isSelected()) {
+					symptoms.add(Symptoms.DIFFICULTY_BREATHING);
+
+				}
+				if (backachesCheckBox.isSelected()) {
+					symptoms.add(Symptoms.BACKHACHES);
+				}
+
+				Disease disease = new Disease(diseaseNameField.getText(), symptoms);
+				Hospital.getInstance().addDisease(disease);
+
+				Patient patient = new Patient(fNameField.getText(), lNameField.getText(), currentSubDepartment, disease);
+				patient.setStatus(Integer.parseInt(statusField.getText()));
+
+				Hospital.getInstance().addPatient(patient, currentSubDepartment);
 
 				// table.setItems(currentSubDepartment.getPatientsObservableList());
 
 				break;
-
 			}
 			case NURSES: {
 				Nurse nurse = new Nurse(fNameField.getText(), lNameField.getText(), (Treatments) treatsComboBox.getValue(), currentSubDepartment);
@@ -559,7 +601,6 @@ public class ViewAndManageViewController {
 				newStatusField.setVisible(false);
 				checkPatientButton.setVisible(true);
 				checkDiseaseButton.setVisible(true);
-				setStatusButton.setVisible(true);
 				removeButton.setVisible(true);
 				removeRecoveredButton.setVisible(true);
 				removeToHotelButton.setVisible(true);
@@ -632,14 +673,6 @@ public class ViewAndManageViewController {
 	}
 
 	@FXML
-	void setStatusButtonHandler(ActionEvent event) {
-		newStatusField.setVisible(true);
-		SFx.slideHorizontally(slideOutPanel, true, 250);
-		newStatusField.requestFocus();
-
-	}
-
-	@FXML
 	public void removeButtonHandler(ActionEvent event) {
 
 		confirmationPopUpSwitch();
@@ -702,24 +735,53 @@ public class ViewAndManageViewController {
 		System.out.println(currentView);
 		switch (currentView) {
 			case PATIENTS: {
-
+				System.out.println(currentSubDepartment.getPatients());
 				TableColumn<Patient, Integer> idColumn = new TableColumn<Patient, Integer>("ID");
 				TableColumn<Patient, String> firtNameColumn = new TableColumn<Patient, String>("First Name");
 				TableColumn<Patient, String> lastNameColumn = new TableColumn<Patient, String>("Last Name");
 				TableColumn<Patient, Integer> statusColumn = new TableColumn<Patient, Integer>("Status");
 				TableColumn<Patient, Condition> conditionColumn = new TableColumn<Patient, Condition>("Condition");
+				TableColumn<Patient, Disease> diseaseColumn = new TableColumn<Patient, Disease>("Disease");
 
 				idColumn.setCellValueFactory(new PropertyValueFactory<Patient, Integer>("id"));
 				firtNameColumn.setCellValueFactory(new PropertyValueFactory<Patient, String>("firstName"));
 				lastNameColumn.setCellValueFactory(new PropertyValueFactory<Patient, String>("lastName"));
 				statusColumn.setCellValueFactory(new PropertyValueFactory<Patient, Integer>("status"));
 				conditionColumn.setCellValueFactory(new PropertyValueFactory<Patient, Condition>("condition"));
+				diseaseColumn.setCellValueFactory(new PropertyValueFactory<Patient, Disease>("disease"));
+
+				lastNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+				firtNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+
+				statusColumn.setCellFactory(TextFieldTableCell.<Patient, Integer>forTableColumn(new IntegerStringConverter() {
+					@Override
+					public Integer fromString(String value) {
+						try {
+							return super.fromString(value);
+						} catch (NumberFormatException e) {
+							return null;
+						}
+					}
+				}));
+
+				statusColumn.setOnEditCommit(t -> {
+					if (t.getNewValue() != null) {
+						t.getRowValue().setStatus(t.getNewValue());
+					} else {
+						exceptionPopUp();
+						t.getTableView().getColumns().get(0).setVisible(false);
+						t.getTableView().getColumns().get(0).setVisible(true);
+						System.err.println("NOTANINT");
+					}
+
+				});
 
 				table.getColumns().add(idColumn);
 				table.getColumns().add(firtNameColumn);
 				table.getColumns().add(lastNameColumn);
 				table.getColumns().add(statusColumn);
 				table.getColumns().add(conditionColumn);
+				table.getColumns().add(diseaseColumn);
 
 				System.out.println("Patients list: " + currentSubDepartment.getPatients());
 				System.out.println("Patients OBSERVABLE: " + currentSubDepartment.getPatientsObservableList());
@@ -895,4 +957,5 @@ public class ViewAndManageViewController {
 
 		}
 	}
+
 }

@@ -50,7 +50,7 @@ public class Start extends Application {
 		Department d = new Department("dept1", Specialization.EMERGENCY);
 		SubDepartment sd = new SubDepartment(d);
 		HashSet<Symptoms> symptoms = new HashSet<Symptoms>();
-		symptoms.add(Symptoms.COUGH);
+		symptoms.add(Symptoms.DIFFICULTY_BREATHING);
 		Disease disease = new Disease("corona", symptoms);
 		Hospital.getInstance().addDisease(disease);
 		Admin admin = new Admin("admin", "admin");

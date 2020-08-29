@@ -5,6 +5,7 @@ import java.io.Serializable;
 import Exceptions.StatusOutOfRangeException;
 import Utils.Condition;
 import Utils.ReleaseNote;
+import Utils.Symptoms;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -59,6 +60,14 @@ public class Patient extends HospitalUser implements Serializable {
 			return disease.get();
 		}
 	}
+
+	public String getDiseaseInfo() {
+		String sympotoms;
+		for (Symptoms symptoms : this.getDisease().getSymptoms()) {
+
+		}
+		return this.getDisease().getName() + " " + this.getLastName() + ", " + this.getFirstName();
+	}
 	/*
 	 * field setters
 	 */
@@ -84,6 +93,7 @@ public class Patient extends HospitalUser implements Serializable {
 		if (status == null) {
 			status = new SimpleIntegerProperty(_status);
 		}
+		System.out.println("status property requestd");
 		return status;
 	}
 
@@ -108,7 +118,8 @@ public class Patient extends HospitalUser implements Serializable {
 	 * @param  status
 	 * @return        string
 	 */
-	public String setStatus(int status) {
+	public void setStatus(int status) {
+		System.out.println("setStatus requested");
 		try {
 			if (status > 100 || status < 0) {
 				throw new StatusOutOfRangeException(status);
@@ -125,7 +136,6 @@ public class Patient extends HospitalUser implements Serializable {
 					_condition = Condition.GOOD;
 				}
 				this.conditionProperty().set(_condition);
-				return "Success";
 			}
 
 		} catch (StatusOutOfRangeException e) {
@@ -140,7 +150,6 @@ public class Patient extends HospitalUser implements Serializable {
 				_condition = Condition.CRITICAL;
 			}
 			this.conditionProperty().set(_condition);
-			return e.toString();
 		}
 
 	}
